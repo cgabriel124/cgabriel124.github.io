@@ -69,10 +69,12 @@
 
   }
 });
-const email = document.getElementById('email');
-
+const email = document.getElementById('email').value;
+console.log(email);
+const password=document.getElementById('confirm_password').value;
+console.log(password);
 const auth = getAuth();
-createUserWithEmailAndPassword(auth, email.value, confirmInput.value).then((userCredential) => {
+createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
   // Signed in
   const user = userCredential.user;
   // ...
