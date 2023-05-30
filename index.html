@@ -6,7 +6,7 @@
 </head>
 <body>
   <h1>Registro de Usuario</h1>
-  <form action="test()" method="POST">
+  <form>
     <label for="email">Email:</label>
     <input type="email" id="email" name="email" required>
 
@@ -38,17 +38,20 @@
     };
     const app = initializeApp(firebaseConfig);
     // Initialize Firebase
-    //alv
-    const email="alisson.caranqui@epsfn.edu.ec"
+    
+    //const email="alisson.caranqui@epsfn.edu.ec"
     const password="12345678";
     
 
     
     const form = document.querySelector('form');
+    
     const passwordInput = document.getElementById('password');
     const confirmInput = document.getElementById('confirm_password');
+    
 
-form.addEventListener('submit', function(event) {
+
+  form.addEventListener('submit', function(event) {
   if (passwordInput.value !== confirmInput.value) {
     event.preventDefault(); // Evita que el formulario se envíe
 
@@ -62,12 +65,11 @@ form.addEventListener('submit', function(event) {
     passwordInput.style.borderColor = 'red';
     confirmInput.style.borderColor = 'red';
 
-  }
-});
-    
-  
+  }else{
+    const email = document.getElementById('email');
+
     const auth = getAuth();
-  createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
+  createUserWithEmailAndPassword(auth, email, confirmInput).then((userCredential) => {
       // Signed in
       const user = userCredential.user;
       // ...
@@ -77,7 +79,10 @@ form.addEventListener('submit', function(event) {
       const errorMessage = error.message;
       // ..
     });
-console.log("asdasdasdasdasdasds")
+  }
+});
+    
+    
 
   </script>
   
