@@ -3,10 +3,44 @@
 <head>
   <title>Golden Anime</title>
   <link rel="stylesheet" type="text/css" href="/styles/signup4Styles.css">
+  <style>
+    .notification-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+    }
+
+    .notification {
+      background-color: #f1f1f1;
+      border: 3px solid #ccc;
+      padding: 50px 75px 75px 50px;
+      border-radius: 10px;
+      margin-bottom: 100px;
+    }
+
+    .notification.error {
+      background-color: #ffdddd;
+      color: red;
+    }
+
+    .notification.success {
+      background-color: #ddffdd;
+      color: green;
+    }
+
+    .notification-close {
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
   <h1>Registro de Usuario</h1>
-  <form>
+  <form id="myForm">
     <label for="email">Email:</label>
     <input type="email" id="email" name="email" required>
 
@@ -19,15 +53,17 @@
     <input type="submit" value="Registrarse">
   </form>
   
+  <div id="notificationContainer" class="notification-container"></div>
+  
   <script type="module">
-    // Import the functions you need from the SDKs you need
+    // Importar las funciones necesarias desde los SDKs que necesitas
 
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-auth.js";
-    // TODO: Add SDKs for Firebase products that you want to use
+    // TODO: Agregar los SDKs de los productos de Firebase que deseas utilizar
     // https://firebase.google.com/docs/web/setup#available-libraries
   
-    // Your web app's Firebase configuration
+    // Configuración de tu aplicación de Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDucz-SMM5igy0gHxoJ3Dwxk0B7nTgQI-M",
       authDomain: "test-316c4.firebaseapp.com",
@@ -37,56 +73,82 @@
       appId: "1:150243191496:web:222644ff3bf06a769b53fd"
     };
     const app = initializeApp(firebaseConfig);
-    // Initialize Firebase
-    
-    //const email="alisson.caranqui@epsfn.edu.ec"
-    //const password="12345678";
-    
+    // Inicializar Firebase
 
-    
-    const form = document.querySelector('form');
-    
+    const form = document.getElementById('myForm');
+    const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
     const confirmInput = document.getElementById('confirm_password');
-    
+    const notificationContainer = document.getElementById('notificationContainer');
+    let currentNotification = null;
 
+    form.addEventListener('submit', function(event) {
+      event.preventDefault(); // Evita que el formulario se envíe
 
-  form.addEventListener('submit', function(event) {
-  if (passwordInput.value !== confirmInput.value) {
-    event.preventDefault(); // Evita que el formulario se envíe
+      if (passwordInput.value !== confirmInput.value) {
+        // Muestra una notificación de error
+        showNotification('Error', 'Las contraseñas no coinciden', 'error');
+        return;
+      }
 
-    // Muestra un mensaje de error
-    const error = document.createElement('p');
-    error.textContent = 'Las contraseñas no coinciden';
-    error.style.color = 'red';
-    form.appendChild(error);
+      const email = emailInput.value;
+      const password = passwordInput.value;
 
-    // Resalta los campos de contraseña
-    passwordInput.style.borderColor = 'red';
-    confirmInput.style.borderColor = 'red';
+      const auth = getAuth();
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Obtener el usuario registrado
+          const user = userCredential.user;
 
-  }else{
+          // Limpiar los campos del formulario
+          emailInput.value = '';
+          passwordInput.value = '';
+          confirmInput.value = '';
 
-  }
-});
-const email = document.getElementById('email').value;
-console.log(email);
-const password=document.getElementById('confirm_password').value;
-console.log(password);
-const auth = getAuth();
-createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
-  // Signed in
-  const user = userCredential.user;
-  // ...
-})
-.catch((error) => {
-  const errorCode = error.code;
-  const errorMessage = error.message;
-  // ..
-}); 
-    
+          // Mostrar una notificación de éxito
+          showNotification('Éxito', 'Registro exitoso', 'success');
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          // Mostrar una notificación de error
+          showNotification('Error', errorMessage, 'error');
+        });
+    });
 
+    function showNotification(title, message, type) {
+      // Cerrar la notificación anterior si existe
+      if (currentNotification) {
+        currentNotification.remove();
+        currentNotification = null;
+      }
+
+      const notification = document.createElement('div');
+      notification.classList.add('notification');
+      notification.classList.add(type);
+
+      const closeButton = document.createElement('span');
+      closeButton.classList.add('notification-close');
+      closeButton.innerHTML = '&times;';
+      closeButton.addEventListener('click', function() {
+        notification.remove();
+        currentNotification = null;
+      });
+
+      const titleElement = document.createElement('strong');
+      titleElement.textContent = title;
+
+      const messageElement = document.createElement('p');
+      messageElement.textContent = message;
+
+      notification.appendChild(closeButton);
+      notification.appendChild(titleElement);
+      notification.appendChild(messageElement);
+
+      notificationContainer.appendChild(notification);
+
+      currentNotification = notification;
+    }
   </script>
-  
 </body>
 </html>
