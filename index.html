@@ -6,7 +6,7 @@
 </head>
 <body>
   <h1>Registro de Usuario</h1>
-  <form  action="index.html" method="POST">
+  <form>
     <label for="email">Email:</label>
     <input type="email" id="email" name="email" required>
 
@@ -43,40 +43,37 @@
     const passwordInput = document.getElementById('password');
     const confirmInput = document.getElementById('confirm_password');
 
-    
-form.addEventListener('submit', function(event) {
-  if (passwordInput.value !== confirmInput.value) {
-    event.preventDefault(); // Evita que el formulario se envíe
+    form.addEventListener('submit', function(event) {
+      event.preventDefault(); // Evita que el formulario se envíe
+      
+      if (passwordInput.value !== confirmInput.value) {
+        // Muestra un mensaje de error
+        const error = document.createElement('p');
+        error.textContent = 'Las contraseñas no coinciden';
+        error.style.color = 'red';
+        form.appendChild(error);
 
-    // Muestra un mensaje de error
-    const error = document.createElement('p');
-    error.textContent = 'Las contraseñas no coinciden';
-    error.style.color = 'red';
-    form.appendChild(error);
-
-    // Resalta los campos de contraseña
-    passwordInput.style.borderColor = 'red';
-    confirmInput.style.borderColor = 'red';
-
-  }else{
-    const email = emailInput.value;
-    const password = passwordInput.value;
-    const auth = getAuth();
-  createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
-      // Signed in
-      const user = userCredential.user;
-      // ...
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      // ..
+        // Resalta los campos de contraseña
+        passwordInput.style.borderColor = 'red';
+        confirmInput.style.borderColor = 'red';
+      } else {
+        const email = document.getElementById('email').value;
+        const password = passwordInput.value;
+        const auth = getAuth();
+        
+        createUserWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            // Registro exitoso
+            const user = userCredential.user;
+            // ...
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            // Manejo del error
+          });
+      }
     });
-
-  }
-});
-    
-
   </script>
   
 </body>
