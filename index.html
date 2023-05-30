@@ -40,7 +40,7 @@
     // Initialize Firebase
     
     //const email="alisson.caranqui@epsfn.edu.ec"
-    const password="12345678";
+    //const password="12345678";
     
 
     
@@ -66,22 +66,22 @@
     confirmInput.style.borderColor = 'red';
 
   }else{
-    const email = document.getElementById('email');
 
-    const auth = getAuth();
-  createUserWithEmailAndPassword(auth, email, confirmInput).then((userCredential) => {
-      // Signed in
-      const user = userCredential.user;
-      // ...
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      // ..
-    });
   }
 });
-    
+const email = document.getElementById('email');
+
+const auth = getAuth();
+createUserWithEmailAndPassword(auth, email.value, confirmInput.value).then((userCredential) => {
+  // Signed in
+  const user = userCredential.user;
+  // ...
+})
+.catch((error) => {
+  const errorCode = error.code;
+  const errorMessage = error.message;
+  // ..
+}); 
     
 
   </script>
